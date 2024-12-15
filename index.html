@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary!</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            color: #fff;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: 1.8rem;
+            margin-top: 10px;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .moving-items img, .moving-items video {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            object-fit: cover;
+            opacity: 0.85;
+            animation: moveSideToSide 18s linear infinite;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+            cursor: pointer;
+        }
+
+        .moving-items img:hover, .moving-items video:hover {
+            transform: scale(1.3);
+            z-index: 20;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+
+        @keyframes moveSideToSide {
+            0% {
+                transform: translateX(-120vw);
+            }
+            100% {
+                transform: translateX(120vw);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 30;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .modal img, .modal video {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Happy Anniversary to Us, Baby! ❤️</h1>
+        <p>Our love grows stronger each day, and this is just the beginning of many more beautiful memories together.</p>
+    </div>
+
+    <div class="moving-items" id="moving-items"></div>
+
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal" id="modal">
+        <img id="modal-img" src="" alt="" style="display: none;">
+        <video id="modal-video" controls style="display: none;"></video>
+    </div>
+
+    <script>
+        const photos = [];
+        for (let i = 1; i <= 23; i++) photos.push(`${i}.png`);
+        for (let i = 24; i <= 26; i++) photos.push(`${i}.JPG`);
+
+        const videos = [
+            'a.mov', 'c.mov', 'd.mov', 'g.MP4', 'h.MP4', 'i.MP4', 'j.MP4', 'k.MP4'
+        ];
+
+        function createMovingItems() {
+            const movingContainer = document.getElementById('moving-items');
+            const maxItems = Math.min(20, photos.length + videos.length);
+
+            for (let i = 0; i < maxItems; i++) {
+                const isPhoto = Math.random() > 0.5 && photos.length > 0;
+                if (isPhoto) {
+                    const photo = photos.splice(Math.floor(Math.random() * photos.length), 1)[0];
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.style.top = `${Math.random() * 80}vh`;
+                    img.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                    img.onclick = () => openModal('img', photo);
+                    movingContainer.appendChild(img);
+                } else if (videos.length > 0) {
+                    const video = videos.splice(Math.floor(Math.random() * videos.length), 1)[0];
+                    const vid = document.createElement('video');
+                    vid.src = video;
+                    vid.muted = true;
+                    vid.loop = true;
+                    vid.play();
+                    vid.style.top = `${Math.random() * 80}vh`;
+                    vid.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                    vid.onclick = () => openModal('video', video);
+                    movingContainer.appendChild(vid);
+                }
+            }
+        }
+
+        function openModal(type, src) {
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modal-overlay');
+            const modalImg = document.getElementById('modal-img');
+            const modalVideo = document.getElementById('modal-video');
+
+            if (type === 'img') {
+                modalImg.src = src;
+                modalImg.style.display = 'block';
+                modalVideo.style.display = 'none';
+            } else if (type === 'video') {
+                modalVideo.src = src;
+                modalVideo.style.display = 'block';
+                modalImg.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+
+            overlay.onclick = closeModal;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modal-overlay');
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        createMovingItems();
+    </script>
+</body>
+</html>
